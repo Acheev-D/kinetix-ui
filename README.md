@@ -1,12 +1,22 @@
-# ⚡ Kinetix UI
+# Kinetix UI ⚡
+
+A high-performance, ultra-lightweight physics interaction engine compiled directly to raw WebAssembly.
 
 **A zero-dependency, battery-safe WebAssembly spring physics engine for the modern web.**
 
 Modern web animation is broken. We rely on massive 40KB+ JavaScript libraries (like Framer Motion or React Spring) to calculate UI physics on the browser's main thread. This drains mobile batteries, drops frames, and bloats bundle sizes.
 
-**Kinetix** is different. It is a custom compiler that generates a raw, bare-metal hardware physics engine. It executes Hooke's Law natively on the CPU using a 4D memory stride architecture. 
+**Kinetix** is different. It is a custom compiler that generates a raw, bare-metal hardware physics engine. By bypassing the heavy JavaScript main thread math entirely, Kinetix calculates kinetic spring states natively on the CPU's Floating-Point Unit (FPU). 
 
 The result? A complete spring physics engine in **under 200 bytes**.
+
+## The Benchmark
+
+| Engine / Library | Size (Gzipped) | Execution Layer | Memory Footprint |
+| :--- | :--- | :--- | :--- |
+| **Framer Motion** | ~45,000 bytes | JS Main Thread | Dynamic Heap |
+| **React Spring** | ~30,000 bytes | JS Main Thread | Dynamic Heap |
+| **Kinetix UI** | **95 bytes** | **Native WASM FPU** | **Static Linear Memory** |
 
 ## ✨ Features
 
