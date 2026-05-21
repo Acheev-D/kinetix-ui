@@ -3,140 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kinetix Engine | Bare-Metal WASM Physics</title>
+    <title>Kinetix 4D UI Engine</title>
     <style>
-        /* Modern Reset & Dark System Theme */
+        /* Base Reset & Cyber Dark Background */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        
-        body {
-            background-color: #0b0f19;
-            color: #f3f4f6;
+
+        body { 
+            background-color: #030712; 
+            background-image: 
+                linear-gradient(rgba(20, 184, 166, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(20, 184, 166, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-position: center;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            color: white; 
+            perspective: 1200px;
             overflow: hidden;
-            position: relative;
         }
 
-        /* Ambient Background Glow */
+        /* Ambient Glow Spheres in Background */
         body::before {
             content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, rgba(0,0,0,0) 70%);
-            top: 10%;
-            left: 10%;
-            z-index: 0;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.08) 0%, rgba(0,0,0,0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
             pointer-events: none;
         }
 
-        /* Main Container */
-        .app-container {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 500px;
-            padding: 1rem;
-        }
-
-        /* Header Styling */
+        /* Branding Header */
         header {
             text-align: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: 2.5rem;
+            pointer-events: none;
         }
 
-        h1 {
-            font-size: 1.75rem;
+        header h1 {
+            font-size: 1.5rem;
             font-weight: 800;
-            letter-spacing: -0.05em;
+            letter-spacing: 0.15em;
             background: linear-gradient(to right, #2dd4bf, #3b82f6);
             -webkit-background-clip: text;
-            background-clip: text; /* Add this line right here */
+            background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.25rem;
+            text-transform: uppercase;
         }
 
-        p {
-            font-size: 0.85rem;
-            color: #9ca3af;
-            font-family: monospace;
-        }
-
-        /* Glassmorphism Viewport Frame */
-        .render-window {
-            background: rgba(17, 24, 39, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 12px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px);
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        canvas {
-            background: #030712;
-            border-radius: 8px;
-            border: 1px solid rgba(20, 184, 166, 0.2);
-            display: block;
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            max-width: 400px;
-        }
-
-        /* Technical Telemetry Dashboard */
-        .telemetry {
-            width: 100%;
-            background: rgba(17, 24, 39, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            font-family: monospace;
+        header p {
             font-size: 0.75rem;
-            color: #6b7280;
+            color: #4b5563;
+            font-family: monospace;
+            margin-top: 0.25rem;
+            letter-spacing: 0.05em;
+        }
+        
+        /* The Interactive Micro-Frontend Card */
+        .card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.8), rgba(31, 41, 55, 0.6));
+            width: 320px; 
+            height: 420px;
+            border-radius: 24px;
+            border: 1px solid rgba(20, 184, 166, 0.25);
+            box-shadow: 
+                0 30px 60px -15px rgba(0,0,0,0.8),
+                0 0 50px -10px rgba(20, 184, 166, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            user-select: none;
+            will-change: transform;
+            /* No CSS transitions! Kinetix Hardware will control this */
         }
 
-        .metric span {
-            color: #2dd4bf;
-            font-weight: bold;
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #f3f4f6;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-family: monospace;
+        }
+
+        /* Visual Core Element inside the card */
+        .card-node-visual {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #2dd4bf, #0d9488);
+            box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
+            margin-bottom: 0.5rem;
+            pointer-events: none;
+        }
+
+        /* Technical Status Dashboard */
+        .status { 
+            margin-top: 2.5rem; 
+            font-family: monospace; 
+            font-size: 0.75rem;
+            color: #4b5563; 
+            background: rgba(17, 24, 39, 0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            letter-spacing: 0.05em;
+        }
+
+        .active { 
+            color: #2dd4bf; 
+            text-shadow: 0 0 10px rgba(45, 212, 191, 0.4);
+            font-weight: bold; 
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <header>
-            <h1>KINETIX CORE</h1>
-            <p>Bare-Metal WebAssembly Physics Engine</p>
-        </header>
+    <header>
+        <h1>Kinetix 4D</h1>
+        <p>Zero-Delay Hardware UI Pipeline</p>
+    </header>
 
-        <div class="render-window">
-            <canvas id="canvas" width="400" height="400"></canvas>
-        </div>
-
-        <div class="telemetry">
-            <div class="metric">ENGINE: <span>WASM (FPU)</span></div>
-            <div class="metric">SIZE: <span>95 BYTES</span></div>
-            <div class="metric">TARGET: <span>60 FPS</span></div>
-        </div>
+    <!-- UI Elements remain unchanged for JS pointer mapping -->
+    <div id="interactiveCard" class="card">
+        <div class="card-node-visual"></div>
+        <h2>Hover & Click Me</h2>
+        <p>WASM Physics Target</p>
     </div>
 
-    <script src="frontend.js"></script>
+    <div id="status" class="status">Engine Status: SLEEPING</div>
+
+    <script>
+        /**
+         * KINETIX ENGINE (v1.0)
+         * Zero-Dependency WebAssembly UI Physics API
+         */
+        class Kinetix {
+            constructor(wasmModule) {
+                this.wasm = wasmModule;
+                this.memoryView = new Float32Array(this.wasm.instance.exports.memory.buffer);
+                this.step = this.wasm.instance.exports.step;
+                this.elements = [];
+                this.isAwake = false;
+            }
+
+            static async boot(url) {
+                const res = await fetch(url + '?v=' + Date.now());
+                const buffer = await res.arrayBuffer();
+                const module = await WebAssembly.instantiate(buffer);
+                return new Kinetix(module);
+            }
+
+            // Allocates a 48-byte block in WASM memory (X, Y, Scale, Rotation)
+            register(domElement) {
+                const ptr = this.elements.length * 12; // 4 properties * 3 floats each = 12 indices
+                
+                // Set default initial states
+                this.memoryView[ptr + 0] = 0; // X Pos
+                this.memoryView[ptr + 3] = 0; // Y Pos
+                this.memoryView[ptr + 6] = 1; // Scale Pos
+                this.memoryView[ptr + 9] = 0; // Rotation Pos
+                
+                // Targets match initial positions
+                this.memoryView[ptr + 2] = 0; this.memoryView[ptr + 5] = 0;
+                this.memoryView[ptr + 8] = 1; this.memoryView[ptr + 11] = 0;
+
+                const node = { el: domElement, ptr: ptr };
+                this.elements.push(node);
+                return node;
+            }
+
+            // The Developer API to trigger animations
+            animate(node, targets) {
+                const ptr = node.ptr;
+                if (targets.x !== undefined) this.memoryView[ptr + 2] = targets.x;
+                if (targets.y !== undefined) this.memoryView[ptr + 5] = targets.y;
+                if (targets.scale !== undefined) this.memoryView[ptr + 8] = targets.scale;
+                if (targets.rotate !== undefined) this.memoryView[ptr + 11] = targets.rotate;
+                
+                if (!this.isAwake) {
+                    this.isAwake = true;
+                    document.getElementById('status').innerHTML = 'Engine Status: <span class="active">ACTIVE LOOP</span>';
+                    this.render();
+                }
+            }
+
+            render = () => {
+                if (!this.isAwake) return;
+
+                // 1. BARE-METAL BATCH PROCESSING (Runs Hooke's Law for all properties)
+                this.step(this.elements.length * 4); 
+
+                let stillMoving = false;
+
+                // 2. READ MEMORY & CHECK SLEEP THRESHOLD
+                for (let node of this.elements) {
+                    const p = node.ptr;
+                    const px = this.memoryView[p+0], vx = this.memoryView[p+1], tx = this.memoryView[p+2];
+                    const py = this.memoryView[p+3], vy = this.memoryView[p+4], ty = this.memoryView[p+5];
+                    const ps = this.memoryView[p+6], vs = this.memoryView[p+7], ts = this.memoryView[p+8];
+                    const pr = this.memoryView[p+9], vr = this.memoryView[p+10], tr = this.memoryView[p+11];
+
+                    // Sleep Threshold: Is velocity high or is it far from target?
+                    const moving = (
+                        Math.abs(vx) > 0.001 || Math.abs(tx - px) > 0.001 ||
+                        Math.abs(vy) > 0.001 || Math.abs(ty - py) > 0.001 ||
+                        Math.abs(vs) > 0.001 || Math.abs(ts - ps) > 0.001 ||
+                        Math.abs(vr) > 0.001 || Math.abs(tr - pr) > 0.001
+                    );
+
+                    if (moving) {
+                        stillMoving = true;
+                        node.el.style.transform = `translate(${px}px, ${py}px) scale(${ps}) rotate(${pr}deg)`;
+                    } else {
+                        // Snap exactly to target to prevent microscopic jitters
+                        this.memoryView[p+0] = tx; this.memoryView[p+3] = ty; 
+                        this.memoryView[ptr+6] = ts; this.memoryView[p+9] = tr;
+                        node.el.style.transform = `translate(${tx}px, ${ty}px) scale(${ts}) rotate(${tr}deg)`;
+                    }
+                }
+
+                if (stillMoving) {
+                    requestAnimationFrame(this.render);
+                } else {
+                    this.isAwake = false; // System sleeps!
+                    document.getElementById('status').innerText = 'Engine Status: SLEEPING';
+                }
+            }
+        }
+
+        // ==========================================
+        // APPLICATION CODE (How developers use it)
+        // ==========================================
+        async function main() {
+            const engine = await Kinetix.boot('kinetix.wasm');
+            
+            const myCard = document.getElementById('interactiveCard');
+            const cardNode = engine.register(myCard);
+
+            // Hover: Lift up, grow slightly, and tilt
+            myCard.addEventListener('mouseenter', () => {
+                engine.animate(cardNode, { y: -20, scale: 1.05, rotate: 2 });
+            });
+
+            // Leave: Return to origin
+            myCard.addEventListener('mouseleave', () => {
+                engine.animate(cardNode, { y: 0, scale: 1.0, rotate: 0 });
+            });
+
+            // Click: Dynamic rotation spike
+            myCard.addEventListener('mousedown', () => {
+                engine.animate(cardNode, { scale: 0.95, rotate: -5 });
+            });
+            myCard.addEventListener('mouseup', () => {
+                engine.animate(cardNode, { scale: 1.05, rotate: 2 });
+            });
+        }
+
+        main();
+    </script>
 </body>
 </html>
